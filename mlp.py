@@ -69,9 +69,9 @@ class RobustMLP(object):
         y_ = tf.placeholder(tf.float32, shape=[None, self.num_classes], name="y_true")  # gold label
         y = mlp(x)  # network output
 
-        cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), axis=[1]))
+        cross_entropy = -tf.reduce_sum(y_ * tf.log(y), axis=[1])
         # train_step = tf.train.AdamOptimizer(0.1).minimize(cross_entropy)  # not convergence
-        train_step = tf.train.AdagradOptimizer(0.1).minimize(cross_entropy)
+        train_step = tf.train.AdagradOptimizer(0.1).minimize(tf.reduce_mean(cross_entropy))
 
         with tf.name_scope("metrics"):
             correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(y, 1))
